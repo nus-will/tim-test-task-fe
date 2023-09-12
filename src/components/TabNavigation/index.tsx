@@ -19,7 +19,7 @@ export default function TabNavigation() {
             <p
               className={`base-text ease-out duration-200 ${
                 selectedTab === index ? "text-gray700 " : "text-gray400"
-              }`}
+              } hover:text-gray700`}
             >
               {item.tabName}
             </p>

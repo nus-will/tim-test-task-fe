@@ -21,7 +21,7 @@ const useTabNavigation = () => {
 
   return {
     onSelectTab,
-    selectedTab
+    selectedTab,
   }
 }
 

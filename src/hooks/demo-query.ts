@@ -1,10 +1,10 @@
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import { getDemoApi } from "../api/api_demo";
 import { queryKeys } from "../utils/constants";
-import { IDemoAPI } from "../types/IDemo";
+import { IContractors } from "../types/IContractor";
 
 export const useDemoQuery = () => {
-  const response: UseQueryResult<IDemoAPI> = useQuery(
+  const response: UseQueryResult<IContractors> = useQuery(
     [queryKeys.GET_DEMO_API],
     getDemoApi
   )
