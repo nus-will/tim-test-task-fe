@@ -29,29 +29,20 @@ export default function Table({ tableData }: Props) {
               >
                 <div className="flex items-center gap-[8px] cursor-pointer">
                   <input type="checkbox" className="w-[15px] h-[15px]" />
-                  <div
-                    className="flex"
-                    onClick={() => handleSortColumn("name", "asc")}
-                  >
+                  <div className="flex">
                     <p>FULL NAME</p>
                     <img src={sortIcon} alt="sort-icon" />
                   </div>
                 </div>
               </th>
               <th className="text-light-gray300 text-[12px] font-normal leading-[1.34em] text-left py-[12px]">
-                <div
-                  className="flex cursor-pointer"
-                  onClick={() => handleSortColumn("special", "asc")}
-                >
+                <div className="flex cursor-pointer">
                   <p>Specialities</p>
                   <img src={sortIcon} alt="sort-icon" />
                 </div>
               </th>
               <th className="text-light-gray300 text-[12px] font-normal leading-[1.34em] text-left py-[12px]">
-                <div
-                  className="flex cursor-pointer"
-                  onClick={() => handleSortColumn("day", "asc")}
-                >
+                <div className="flex cursor-pointer">
                   <p>Day rate</p>
                   <img src={sortIcon} alt="sort-icon" />
                 </div>
@@ -60,10 +51,7 @@ export default function Table({ tableData }: Props) {
                 data-priority="4"
                 className="text-light-gray300 text-[12px] font-normal leading-[1.34em] text-left py-[12px]"
               >
-                <div
-                  className="flex cursor-pointer"
-                  onClick={() => handleSortColumn("avail", "asc")}
-                >
+                <div className="flex cursor-pointer">
                   <p>Availability</p>
                   <img src={sortIcon} alt="sort-icon" />
                 </div>
@@ -178,35 +166,36 @@ const SpecialItem = ({
   isSelectedContractor,
 }: {
   specialities: ISpecialties[];
-  isSelectedContractor: any;
+  isSelectedContractor: boolean;
 }) => {
   return (
     <>
-      {specialities.map(
-        (specialtyItem: ISpecialties, specialtyIndex: number) => {
-          return (
-            <div key={specialtyIndex}>
-              {specialtyIndex < 2 ? (
-                <div
-                  className={`px-[8px] py-[6px] rounded-[8px] ${
-                    isSelectedContractor ? "bg-blue200" : "bg-gray"
-                  }`}
-                >
-                  <p
-                    className={`text-[12px] base-text leading-[16px] ${
-                      isSelectedContractor ? "text-white" : "text-gray600"
-                    }`}
-                  >
-                    {specialtyItem.name}
-                  </p>
-                </div>
-              ) : (
-                <></>
-              )}
-            </div>
-          );
-        }
-      )}
+      <div
+        className={`px-[8px] py-[6px] rounded-[8px] ${
+          isSelectedContractor ? "bg-blue200" : "bg-gray"
+        }`}
+      >
+        <p
+          className={`text-[12px] base-text leading-[16px] ${
+            isSelectedContractor ? "text-white" : "text-gray600"
+          }`}
+        >
+          {specialities[0].name}
+        </p>
+      </div>
+      <div
+        className={`px-[8px] py-[6px] rounded-[8px] ${
+          isSelectedContractor ? "bg-blue200" : "bg-gray"
+        }`}
+      >
+        <p
+          className={`text-[12px] base-text leading-[16px] ${
+            isSelectedContractor ? "text-white" : "text-gray600"
+          }`}
+        >
+          {specialities[1].name}
+        </p>
+      </div>
       <div
         className={`px-[8px] py-[6px] rounded-[8px] ${
           isSelectedContractor ? "bg-blue200" : "bg-gray"

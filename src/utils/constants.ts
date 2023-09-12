@@ -1,6 +1,6 @@
 import { ITabs } from "../types/ITabs"
 
-export enum ApiMethod{
+export enum ApiMethod {
   POST = 'post',
   PUT = 'put',
   GET = 'get',
@@ -11,20 +11,20 @@ export const queryKeys = {
   GET_DEMO_API: 'GET_DEMO_API'
 }
 
-export const Tabs:ITabs []= [
+export const Tabs: ITabs[] = [
   {
-  tabName: 'Overview',
+    tabName: 'Overview',
   },
   {
-  tabName: 'Tasks',
+    tabName: 'Tasks',
   },
   {
-  tabName: 'Projects',
+    tabName: 'Projects',
   },
   {
-  tabName: 'Payments',
+    tabName: 'Payments',
   },
   {
-  tabName: 'Users',
+    tabName: 'Users',
   },
 ]

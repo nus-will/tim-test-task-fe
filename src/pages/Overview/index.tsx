@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import TabNavigationLayout from "../components/Layout/TabNavigationLayout";
-import Table from "../components/Table";
-import { useDemoQuery } from "../hooks/demo-query";
-import { generateRandomColor } from "../utils/utils";
+import TabNavigationLayout from "../../components/Layout/TabNavigationLayout";
+import Table from "../../components/Table";
+import { useDemoQuery } from "../../hooks/demo-query";
+import { generateRandomColor } from "../../utils/utils";
 
 export default function Overview() {
   const [tableData, setTableData] = useState<any>(null);

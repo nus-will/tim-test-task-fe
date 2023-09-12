@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom"
 import { Tabs } from "../../utils/constants"
 
 const useTabNavigation = () => {
-  const [selectedTab, setSelectedTab] = useState<number>(0)
+  const [selectedTab, setSelectedTab] = useState<number | null>(null)
   const navigate = useNavigate()
   const location = useLocation()
 
