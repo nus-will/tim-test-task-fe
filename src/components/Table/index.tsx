@@ -6,7 +6,8 @@ import {
 import Search from "../Search";
 import useTable from "./hooks";
 import sortIcon from "../../assets/images/sort-icon.svg";
-import { useCallback, useEffect, useState } from "react";
+import inactiveSortIcon from "../../assets/images/inactive-sort.svg";
+import { useCallback, useEffect } from "react";
 import { TableProps } from "../../types/ITable";
 
 export default function Table({
@@ -15,10 +16,19 @@ export default function Table({
   isLoading,
   orderRequest,
 }: TableProps) {
-  const [orderFullName, setOrderFullName] = useState<boolean>(false);
-  const [orderDateRate, setOrderDateRate] = useState<boolean>(false);
-  const [orderAvail, setOrderAvail] = useState<boolean>(false);
-  const [isSorted, setIsSorted] = useState<boolean>(false);
+  const {
+    orderFullName,
+    setOrderFullName,
+    orderDateRate,
+    setOrderDateRate,
+    orderAvail,
+    setOrderAvail,
+    setIsSorted,
+    sortedType,
+    setSortedType,
+    handleCheckAll,
+    isCheckedAll,
+  } = useTable();
 
   const handleSort = useCallback(
     (type: string) => {
@@ -26,6 +36,7 @@ export default function Table({
       switch (type) {
         case "full_name":
           setOrderFullName(!orderFullName);
+          setSortedType(type);
           orderRequest({
             type: type,
             order: orderFullName ? "asc" : "desc",
@@ -33,6 +44,7 @@ export default function Table({
           break;
         case "day_rate":
           setOrderDateRate(!orderDateRate);
+          setSortedType(type);
           orderRequest({
             type: type,
             order: orderDateRate ? "asc" : "desc",
@@ -41,6 +53,7 @@ export default function Table({
 
         case "available":
           setOrderAvail(!orderAvail);
+          setSortedType(type);
           orderRequest({
             type: type,
             order: orderAvail ? "asc" : "desc",
@@ -50,7 +63,17 @@ export default function Table({
           break;
       }
     },
-    [orderAvail, orderDateRate, orderFullName, orderRequest]
+    [
+      orderAvail,
+      orderDateRate,
+      orderFullName,
+      orderRequest,
+      setIsSorted,
+      setOrderAvail,
+      setOrderDateRate,
+      setOrderFullName,
+      setSortedType,
+    ]
   );
 
   return (
@@ -67,7 +90,12 @@ export default function Table({
                 className="text-light-gray300 text-[12px] font-normal leading-[1.34em] text-left py-[12px]"
               >
                 <div className="flex items-center gap-[8px] cursor-pointer">
-                  <input type="checkbox" className="w-[15px] h-[15px]" />
+                  <input
+                    type="checkbox"
+                    className="w-[15px] h-[15px]"
+                    onChange={handleCheckAll}
+                    disabled={isLoading}
+                  />
                   <div
                     className="flex"
                     onClick={() => {
@@ -75,7 +103,15 @@ export default function Table({
                     }}
                   >
                     <p>FULL NAME</p>
-                    <img src={sortIcon} alt="sort-icon" />
+                    <img
+                      src={
+                        sortedType === "full_name" ? sortIcon : inactiveSortIcon
+                      }
+                      alt="sort-icon"
+                      className={`${orderFullName ? "rotate-180" : ""} ${
+                        sortedType !== "full_name" && "ml-[4px]"
+                      }`}
+                    />
                   </div>
                 </div>
               </th>
@@ -92,7 +128,15 @@ export default function Table({
                   }}
                 >
                   <p>Day rate</p>
-                  <img src={sortIcon} alt="sort-icon" />
+                  <img
+                    src={
+                      sortedType === "day_rate" ? sortIcon : inactiveSortIcon
+                    }
+                    alt="sort-icon"
+                    className={`${orderDateRate ? "rotate-180" : ""}  ${
+                      sortedType !== "day_rate" && "ml-[4px]"
+                    }`}
+                  />
                 </div>
               </th>
               <th
@@ -106,7 +150,15 @@ export default function Table({
                   }}
                 >
                   <p>AVAILABILITY</p>
-                  <img src={sortIcon} alt="sort-icon" />
+                  <img
+                    src={
+                      sortedType === "available" ? sortIcon : inactiveSortIcon
+                    }
+                    alt="sort-icon"
+                    className={`${orderAvail ? "rotate-180" : ""}  ${
+                      sortedType !== "available" && "ml-[4px]"
+                    }`}
+                  />
                 </div>
               </th>
               <th className="w-[24px]" />
@@ -183,7 +235,7 @@ export default function Table({
                 </tr>
               </>
             ) : (
-              <TableBody contractors={tableData} isSorted={isSorted} />
+              <TableBody contractors={tableData} isCheckedAll={isCheckedAll} />
             )}
           </tbody>
         </table>
@@ -192,7 +244,7 @@ export default function Table({
   );
 }
 
-const TableBody = ({ contractors, isSorted }: IContractors) => {
+const TableBody = ({ contractors, isCheckedAll }: IContractors) => {
   const {
     handleSelectedContractor,
     selectedContractor,
@@ -200,16 +252,21 @@ const TableBody = ({ contractors, isSorted }: IContractors) => {
     setSelectedContractor,
   } = useTable();
 
-  const [removeSelectItem, setRemoveSelectItem] = useState<boolean | null>(
-    false
-  );
+  const { removeSelectItem, setRemoveSelectItem } = useTable();
 
   useEffect(() => {
     if (contractors) {
       setSelectedContractor([]);
       setRemoveSelectItem(false);
     }
-  }, [contractors, setSelectedContractor]);
+  }, [contractors, setRemoveSelectItem, setSelectedContractor]);
+
+  useEffect(() => {
+    if (isCheckedAll) {
+      setSelectedContractor([]);
+      setRemoveSelectItem(false);
+    }
+  }, [isCheckedAll, setRemoveSelectItem, setSelectedContractor]);
 
   return (
     <>
@@ -217,10 +274,12 @@ const TableBody = ({ contractors, isSorted }: IContractors) => {
         return (
           <tr
             className={`h-[60px] cursor-pointer ease-in-out duration-300 ${
-              selectedContractor.includes(contractorIndex) &&
-              !removeSelectItem &&
+              (isCheckedAll ||
+                (selectedContractor.includes(contractorIndex) &&
+                  !removeSelectItem)) &&
               "bg-blue100"
             } ${
+              !isCheckedAll &&
               !selectedContractor.includes(contractorIndex) &&
               "hover:bg-light-gray400"
             }`}
@@ -234,7 +293,7 @@ const TableBody = ({ contractors, isSorted }: IContractors) => {
               <div className="flex items-center gap-[8px]">
                 <input
                   checked={
-                    selectedContractor.includes(contractorIndex)
+                    isCheckedAll || selectedContractor.includes(contractorIndex)
                       ? removeSelectItem
                         ? false
                         : true
@@ -254,8 +313,9 @@ const TableBody = ({ contractors, isSorted }: IContractors) => {
                 </div>
                 <p
                   className={
-                    selectedContractor.includes(contractorIndex) &&
-                    !removeSelectItem
+                    isCheckedAll ||
+                    (selectedContractor.includes(contractorIndex) &&
+                      !removeSelectItem)
                       ? "text-white"
                       : ""
                   }
@@ -269,8 +329,9 @@ const TableBody = ({ contractors, isSorted }: IContractors) => {
                 <SpecialItem
                   specialities={item?.specialities}
                   isSelectedContractor={
-                    selectedContractor.includes(contractorIndex) &&
-                    !removeSelectItem
+                    isCheckedAll ||
+                    (selectedContractor.includes(contractorIndex) &&
+                      !removeSelectItem)
                   }
                 />
               )}
@@ -278,8 +339,9 @@ const TableBody = ({ contractors, isSorted }: IContractors) => {
             <td className="w-[120px]">
               <p
                 className={
-                  selectedContractor.includes(contractorIndex) &&
-                  !removeSelectItem
+                  isCheckedAll ||
+                  (selectedContractor.includes(contractorIndex) &&
+                    !removeSelectItem)
                     ? "text-white"
                     : ""
                 }
@@ -290,8 +352,9 @@ const TableBody = ({ contractors, isSorted }: IContractors) => {
             <td className="w-[120px]">
               <p
                 className={
-                  selectedContractor.includes(contractorIndex) &&
-                  !removeSelectItem
+                  isCheckedAll ||
+                  (selectedContractor.includes(contractorIndex) &&
+                    !removeSelectItem)
                     ? "text-white"
                     : ""
                 }
@@ -326,7 +389,7 @@ const SpecialItem = ({
             isSelectedContractor ? "text-white" : "text-gray600"
           }`}
         >
-          {specialities[0].name}
+          {specialities[0]?.name}
         </p>
       </div>
       <div
@@ -339,7 +402,7 @@ const SpecialItem = ({
             isSelectedContractor ? "text-white" : "text-gray600"
           }`}
         >
-          {specialities[1].name}
+          {specialities[1]?.name}
         </p>
       </div>
       {specialities.length - 2 > 0 && (
@@ -357,20 +420,28 @@ const SpecialItem = ({
           </p>
           <div className="group-hover:visible invisible absolute w-auto top-[-40px] px-[8px] py-[6px] rounded-[8px] bg-gray">
             <div className="flex">
-              {specialities.map((item, index) => {
-                return (
-                  <>
-                    {index > 2 && (
-                      <div className="flex items-center">
-                        <span className="text-[12px] pr-[5px]">
-                          {item.name}
-                          <span>{specialities.length - 1 > index && ", "}</span>
-                        </span>
-                      </div>
-                    )}
-                  </>
-                );
-              })}
+              {specialities.map(
+                (specialItem: ISpecialties, specialItemIndex: number) => {
+                  return (
+                    <>
+                      {specialItemIndex > 1 && (
+                        <div
+                          className="flex items-center"
+                          key={specialItemIndex}
+                        >
+                          <span className="text-[12px] pr-[5px]">
+                            {specialItem.name}
+                            <span>
+                              {specialities.length - 1 > specialItemIndex &&
+                                ", "}
+                            </span>
+                          </span>
+                        </div>
+                      )}
+                    </>
+                  );
+                }
+              )}
             </div>
           </div>
         </div>

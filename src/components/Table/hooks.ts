@@ -5,6 +5,18 @@ const useTable = () => {
   const [selectSortColumn, setSelectSortColumn] = useState<boolean>(true)
   const [checkedContractor, setCheckedContractor] = useState<boolean>(false)
 
+  const [orderFullName, setOrderFullName] = useState<boolean>(false);
+  const [orderDateRate, setOrderDateRate] = useState<boolean>(false);
+  const [orderAvail, setOrderAvail] = useState<boolean>(false);
+  const [isSorted, setIsSorted] = useState<boolean>(false);
+  const [sortedType, setSortedType] = useState<string>("full_name");
+
+  const [removeSelectItem, setRemoveSelectItem] = useState<boolean | null>(
+    false
+  );
+
+  const [isCheckedAll, setIsCheckedAll] = useState<boolean>(false)
+
   const handleSelectedContractor = useCallback((index: number) => {
     let arrSelectors: Number[] = []
 
@@ -24,13 +36,31 @@ const useTable = () => {
     setCheckedContractor(e.target.checked)
   }, [])
 
+  const handleCheckAll = useCallback(() => {
+    setIsCheckedAll(!isCheckedAll)
+  }, [isCheckedAll])
+
   return {
     handleSelectedContractor,
     selectedContractor,
     handleSortColumn,
     handleCheckedContractor,
     checkedContractor,
-    setSelectedContractor
+    setSelectedContractor,
+    orderFullName,
+    setOrderFullName,
+    orderDateRate,
+    setOrderDateRate,
+    orderAvail,
+    setOrderAvail,
+    isSorted,
+    setIsSorted,
+    sortedType,
+    setSortedType,
+    removeSelectItem,
+    setRemoveSelectItem,
+    handleCheckAll,
+    isCheckedAll
   }
 }
 
