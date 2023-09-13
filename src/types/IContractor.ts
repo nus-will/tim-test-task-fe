@@ -1,5 +1,6 @@
 export interface IContractors {
   contractors: IContractor[]
+  isSorted?: boolean
 }
 
 export interface IContractor {

@@ -6,7 +6,7 @@ import {
 import Search from "../Search";
 import useTable from "./hooks";
 import sortIcon from "../../assets/images/sort-icon.svg";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { TableProps } from "../../types/ITable";
 
 export default function Table({
@@ -18,9 +18,11 @@ export default function Table({
   const [orderFullName, setOrderFullName] = useState<boolean>(false);
   const [orderDateRate, setOrderDateRate] = useState<boolean>(false);
   const [orderAvail, setOrderAvail] = useState<boolean>(false);
+  const [isSorted, setIsSorted] = useState<boolean>(false);
 
   const handleSort = useCallback(
     (type: string) => {
+      setIsSorted(true);
       switch (type) {
         case "full_name":
           setOrderFullName(!orderFullName);
@@ -55,7 +57,7 @@ export default function Table({
     <div className="box-shadow flex flex-col max-w-[63.194vw]  h-full w-full">
       <Search inputValue={(e) => searchData(e)} />
 
-      <div className="flex w-full overflow-scroll">
+      <div className="flex w-full overflow-auto">
         <table className="table-auto mb-[24px] px-[24px] min-w-[768px] w-full">
           <thead className="sticky top-0 bg-white">
             <tr className="h-[60px]">
@@ -181,7 +183,7 @@ export default function Table({
                 </tr>
               </>
             ) : (
-              <TableBody contractors={tableData} />
+              <TableBody contractors={tableData} isSorted={isSorted} />
             )}
           </tbody>
         </table>
@@ -190,12 +192,24 @@ export default function Table({
   );
 }
 
-const TableBody = ({ contractors }: IContractors) => {
+const TableBody = ({ contractors, isSorted }: IContractors) => {
   const {
     handleSelectedContractor,
     selectedContractor,
     handleCheckedContractor,
+    setSelectedContractor,
   } = useTable();
+
+  const [removeSelectItem, setRemoveSelectItem] = useState<boolean | null>(
+    false
+  );
+
+  useEffect(() => {
+    if (contractors) {
+      setSelectedContractor([]);
+      setRemoveSelectItem(false);
+    }
+  }, [contractors, setSelectedContractor]);
 
   return (
     <>
@@ -203,7 +217,9 @@ const TableBody = ({ contractors }: IContractors) => {
         return (
           <tr
             className={`h-[60px] cursor-pointer ease-in-out duration-300 ${
-              selectedContractor.includes(contractorIndex) && "bg-blue100"
+              selectedContractor.includes(contractorIndex) &&
+              !removeSelectItem &&
+              "bg-blue100"
             } ${
               !selectedContractor.includes(contractorIndex) &&
               "hover:bg-light-gray400"
@@ -218,7 +234,11 @@ const TableBody = ({ contractors }: IContractors) => {
               <div className="flex items-center gap-[8px]">
                 <input
                   checked={
-                    selectedContractor.includes(contractorIndex) ? true : false
+                    selectedContractor.includes(contractorIndex)
+                      ? removeSelectItem
+                        ? false
+                        : true
+                      : false
                   }
                   className="w-[15px] h-[15px]"
                   type="checkbox"
@@ -234,7 +254,8 @@ const TableBody = ({ contractors }: IContractors) => {
                 </div>
                 <p
                   className={
-                    selectedContractor.includes(contractorIndex)
+                    selectedContractor.includes(contractorIndex) &&
+                    !removeSelectItem
                       ? "text-white"
                       : ""
                   }
@@ -247,16 +268,18 @@ const TableBody = ({ contractors }: IContractors) => {
               {item?.specialities && (
                 <SpecialItem
                   specialities={item?.specialities}
-                  isSelectedContractor={selectedContractor.includes(
-                    contractorIndex
-                  )}
+                  isSelectedContractor={
+                    selectedContractor.includes(contractorIndex) &&
+                    !removeSelectItem
+                  }
                 />
               )}
             </td>
             <td className="w-[120px]">
               <p
                 className={
-                  selectedContractor.includes(contractorIndex)
+                  selectedContractor.includes(contractorIndex) &&
+                  !removeSelectItem
                     ? "text-white"
                     : ""
                 }
@@ -267,7 +290,8 @@ const TableBody = ({ contractors }: IContractors) => {
             <td className="w-[120px]">
               <p
                 className={
-                  selectedContractor.includes(contractorIndex)
+                  selectedContractor.includes(contractorIndex) &&
+                  !removeSelectItem
                     ? "text-white"
                     : ""
                 }
@@ -318,19 +342,39 @@ const SpecialItem = ({
           {specialities[1].name}
         </p>
       </div>
-      <div
-        className={`px-[8px] py-[6px] rounded-[8px] ${
-          isSelectedContractor ? "bg-blue200" : "bg-gray"
-        }`}
-      >
-        <p
-          className={`text-[12px] base-text leading-[16px] ${
-            isSelectedContractor ? "text-white" : "text-gray600"
+      {specialities.length - 2 > 0 && (
+        <div
+          className={`px-[8px] py-[6px] rounded-[8px] relative group ${
+            isSelectedContractor ? "bg-blue200" : "bg-gray"
           }`}
         >
-          +{specialities.length}
-        </p>
-      </div>
+          <p
+            className={`text-[12px] base-text leading-[16px] ${
+              isSelectedContractor ? "text-white" : "text-gray600"
+            }`}
+          >
+            +{specialities.length - 2}
+          </p>
+          <div className="group-hover:visible invisible absolute w-auto top-[-40px] px-[8px] py-[6px] rounded-[8px] bg-gray">
+            <div className="flex">
+              {specialities.map((item, index) => {
+                return (
+                  <>
+                    {index > 2 && (
+                      <div className="flex items-center">
+                        <span className="text-[12px] pr-[5px]">
+                          {item.name}
+                          <span>{specialities.length - 1 > index && ", "}</span>
+                        </span>
+                      </div>
+                    )}
+                  </>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

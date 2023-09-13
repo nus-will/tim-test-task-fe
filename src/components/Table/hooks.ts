@@ -17,8 +17,6 @@ const useTable = () => {
   }, [selectedContractor])
 
   const handleSortColumn = useCallback((type: string, direction: string) => {
-    console.log(type)
-    console.log(direction)
     setSelectSortColumn(!selectSortColumn)
   }, [selectSortColumn])
 
@@ -31,7 +29,8 @@ const useTable = () => {
     selectedContractor,
     handleSortColumn,
     handleCheckedContractor,
-    checkedContractor
+    checkedContractor,
+    setSelectedContractor
   }
 }
 
