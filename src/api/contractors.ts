@@ -1,9 +1,9 @@
 import {request } from 'graphql-request';
 import { ApiProps } from '../types/IAPI';
 
-const baseUrl = 'https://tim-test-task-57913b1d1965.herokuapp.com/graphql?';
+const baseUrl = process.env.REACT_APP_BASE_URL || ""
 
-export const getDemoApi = async ({sortBy = "full_name", orderBy ="asc", searchBy}: ApiProps) => {
+export const getAPI = async ({sortBy = "full_name", orderBy ="asc", searchBy}: ApiProps) => {
   const query = `{
     contractors(_sort: "${sortBy}", _order: "${orderBy}", q: "${searchBy}") {
       full_name

@@ -6,14 +6,51 @@ import {
 import Search from "../Search";
 import useTable from "./hooks";
 import sortIcon from "../../assets/images/sort-icon.svg";
+import { useCallback, useState } from "react";
+import { TableProps } from "../../types/ITable";
 
-interface Props {
-  tableData: IContractor[];
-  searchData: (n: string) => void;
-  isLoading: boolean;
-}
+export default function Table({
+  tableData,
+  searchData,
+  isLoading,
+  orderRequest,
+}: TableProps) {
+  const [orderFullName, setOrderFullName] = useState<boolean>(false);
+  const [orderDateRate, setOrderDateRate] = useState<boolean>(false);
+  const [orderAvail, setOrderAvail] = useState<boolean>(false);
 
-export default function Table({ tableData, searchData, isLoading }: Props) {
+  const handleSort = useCallback(
+    (type: string) => {
+      switch (type) {
+        case "full_name":
+          setOrderFullName(!orderFullName);
+          orderRequest({
+            type: type,
+            order: orderFullName ? "asc" : "desc",
+          });
+          break;
+        case "day_rate":
+          setOrderDateRate(!orderDateRate);
+          orderRequest({
+            type: type,
+            order: orderDateRate ? "asc" : "desc",
+          });
+          break;
+
+        case "available":
+          setOrderAvail(!orderAvail);
+          orderRequest({
+            type: type,
+            order: orderAvail ? "asc" : "desc",
+          });
+          break;
+        default:
+          break;
+      }
+    },
+    [orderAvail, orderDateRate, orderFullName, orderRequest]
+  );
+
   return (
     <div className="box-shadow flex flex-col max-w-[63.194vw]  h-full w-full">
       <Search inputValue={(e) => searchData(e)} />
@@ -29,7 +66,12 @@ export default function Table({ tableData, searchData, isLoading }: Props) {
               >
                 <div className="flex items-center gap-[8px] cursor-pointer">
                   <input type="checkbox" className="w-[15px] h-[15px]" />
-                  <div className="flex">
+                  <div
+                    className="flex"
+                    onClick={() => {
+                      handleSort("full_name");
+                    }}
+                  >
                     <p>FULL NAME</p>
                     <img src={sortIcon} alt="sort-icon" />
                   </div>
@@ -37,12 +79,16 @@ export default function Table({ tableData, searchData, isLoading }: Props) {
               </th>
               <th className="text-light-gray300 text-[12px] font-normal leading-[1.34em] text-left py-[12px]">
                 <div className="flex cursor-pointer">
-                  <p>Specialities</p>
-                  <img src={sortIcon} alt="sort-icon" />
+                  <p>SPECIALITIES</p>
                 </div>
               </th>
               <th className="text-light-gray300 text-[12px] font-normal leading-[1.34em] text-left py-[12px]">
-                <div className="flex cursor-pointer">
+                <div
+                  className="flex cursor-pointer"
+                  onClick={() => {
+                    handleSort("day_rate");
+                  }}
+                >
                   <p>Day rate</p>
                   <img src={sortIcon} alt="sort-icon" />
                 </div>
@@ -51,8 +97,13 @@ export default function Table({ tableData, searchData, isLoading }: Props) {
                 data-priority="4"
                 className="text-light-gray300 text-[12px] font-normal leading-[1.34em] text-left py-[12px]"
               >
-                <div className="flex cursor-pointer">
-                  <p>Availability</p>
+                <div
+                  className="flex cursor-pointer"
+                  onClick={() => {
+                    handleSort("available");
+                  }}
+                >
+                  <p>AVAILABILITY</p>
                   <img src={sortIcon} alt="sort-icon" />
                 </div>
               </th>
@@ -62,26 +113,72 @@ export default function Table({ tableData, searchData, isLoading }: Props) {
           <tbody>
             {isLoading ? (
               <>
-                <td className="w-[24px]" />
-                <td>
-                  <div className="flex items-center gap-[16px]">
-                    <div className="rounded-full bg-gray400 h-10 w-10"></div>
-                    <div className="h-2 bg-gray400 rounded w-[6.05vw]"></div>
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-[8px]">
-                    <div className="h-5 bg-gray400 rounded w-[6.34vw]"></div>
-                    <div className="h-5 bg-gray400 rounded w-[6.34vw]"></div>
-                    <div className="h-5 bg-gray400 rounded w-[2.34vw]"></div>
-                  </div>
-                </td>
-                <td>
-                  <div className="h-2 bg-gray400 rounded w-[5.3vw]"></div>
-                </td>
-                <td>
-                  <div className="h-2 bg-gray400 rounded w-[5.3vw]"></div>
-                </td>
+                <tr>
+                  <td className="w-[24px]" />
+                  <td>
+                    <div className="flex items-center gap-[16px] my-[8px]">
+                      <div className="rounded-full bg-gray400 h-10 w-10"></div>
+                      <div className="h-2 bg-gray400 rounded w-[6.05vw]"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <div className="flex gap-[8px]">
+                      <div className="h-5 bg-gray400 rounded w-[6.34vw]"></div>
+                      <div className="h-5 bg-gray400 rounded w-[6.34vw]"></div>
+                      <div className="h-5 bg-gray400 rounded w-[2.34vw]"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <div className="h-2 bg-gray400 rounded w-[5.3vw]"></div>
+                  </td>
+                  <td>
+                    <div className="h-2 bg-gray400 rounded w-[5.3vw]"></div>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="w-[24px]" />
+                  <td>
+                    <div className="flex items-center gap-[16px]  my-[8px]">
+                      <div className="rounded-full bg-gray400 h-10 w-10"></div>
+                      <div className="h-2 bg-gray400 rounded w-[6.05vw]"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <div className="flex gap-[8px]">
+                      <div className="h-5 bg-gray400 rounded w-[6.34vw]"></div>
+                      <div className="h-5 bg-gray400 rounded w-[6.34vw]"></div>
+                      <div className="h-5 bg-gray400 rounded w-[2.34vw]"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <div className="h-2 bg-gray400 rounded w-[5.3vw]"></div>
+                  </td>
+                  <td>
+                    <div className="h-2 bg-gray400 rounded w-[5.3vw]"></div>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="w-[24px]" />
+                  <td>
+                    <div className="flex items-center gap-[16px]  my-[8px]">
+                      <div className="rounded-full bg-gray400 h-10 w-10"></div>
+                      <div className="h-2 bg-gray400 rounded w-[6.05vw]"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <div className="flex gap-[8px]">
+                      <div className="h-5 bg-gray400 rounded w-[6.34vw]"></div>
+                      <div className="h-5 bg-gray400 rounded w-[6.34vw]"></div>
+                      <div className="h-5 bg-gray400 rounded w-[2.34vw]"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <div className="h-2 bg-gray400 rounded w-[5.3vw]"></div>
+                  </td>
+                  <td>
+                    <div className="h-2 bg-gray400 rounded w-[5.3vw]"></div>
+                  </td>
+                </tr>
               </>
             ) : (
               <TableBody contractors={tableData} />

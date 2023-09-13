@@ -1,14 +1,14 @@
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
-import { getDemoApi } from "../api/api_demo";
+import { getAPI } from "../api/contractors";
 import { queryKeys } from "../utils/constants";
 import { IContractors } from "../types/IContractor";
 import { ApiProps } from "../types/IAPI";
 
-export const useDemoQuery = ({sortBy ="full_name", orderBy = "asc", searchBy}: ApiProps) => {
+export const useAPIQuery = ({sortBy ="full_name", orderBy = "asc", searchBy}: ApiProps) => {
   const response: UseQueryResult<IContractors> = useQuery(
-    [queryKeys.GET_DEMO_API],
+    [queryKeys.GET_CONTRACTORS],
     async () => {
-      return await getDemoApi({
+      return await getAPI({
         sortBy: sortBy,
         orderBy: orderBy,
         searchBy: searchBy,

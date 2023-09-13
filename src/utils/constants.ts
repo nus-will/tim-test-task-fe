@@ -8,7 +8,7 @@ export enum ApiMethod {
 }
 
 export const queryKeys = {
-  GET_DEMO_API: 'GET_DEMO_API'
+  GET_CONTRACTORS: 'GET_CONTRACTORS'
 }
 
 export const Tabs: ITabs[] = [

@@ -12,6 +12,7 @@ export default function Search({ inputValue }: SearchProps) {
       if (e.key === "Enter") {
         inputValue(e.target.value);
       }
+      if (e.target.value === "") inputValue("");
     },
     [inputValue]
   );

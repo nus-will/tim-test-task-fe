@@ -1,16 +1,26 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import TabNavigationLayout from "../../components/Layout/TabNavigationLayout";
 import Table from "../../components/Table";
-import { useDemoQuery } from "../../hooks/demo-query";
+import { useAPIQuery } from "../../hooks/contractor-query";
 import { generateRandomColor } from "../../utils/utils";
+import { OrderRequest } from "../../types/ITable";
 
 export default function Overview() {
   const [tableData, setTableData] = useState<any>(null);
   const [searchText, setSearchText] = useState<string>("");
+  const [orderText, setOrderText] = useState<string>("asc");
+  const [typeText, setTypeText] = useState<string>("full_name");
 
-  const { data, refetch, isLoading } = useDemoQuery({
+  const { data, refetch, isLoading } = useAPIQuery({
+    sortBy: typeText,
+    orderBy: orderText,
     searchBy: searchText,
   });
+
+  const handleSort = useCallback((e: OrderRequest) => {
+    setOrderText(e.order);
+    setTypeText(e.type);
+  }, []);
 
   useEffect(() => {
     if (data) {
@@ -24,10 +34,10 @@ export default function Overview() {
   }, [data]);
 
   useEffect(() => {
-    if (searchText) {
+    if (searchText || orderText || typeText) {
       refetch();
     } else if (searchText === "") refetch();
-  }, [searchText, refetch]);
+  }, [searchText, refetch, orderText, typeText]);
 
   return (
     <TabNavigationLayout>
@@ -47,6 +57,7 @@ export default function Overview() {
             tableData={tableData}
             searchData={(e) => setSearchText(e)}
             isLoading={isLoading}
+            orderRequest={(e: OrderRequest) => handleSort(e)}
           />
         </div>
       </div>
