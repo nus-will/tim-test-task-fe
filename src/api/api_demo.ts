@@ -1,94 +1,25 @@
-import Api from "./api";
+import {request } from 'graphql-request';
+import { ApiProps } from '../types/IAPI';
 
-export const getDemoApi = async () => {
-  const base_url = 'http://localhost:8989/contractors?_sort=day_rate&_order=desc&q=medical'
-  try {
-    // const response = await Api.get(base_url);
-    const response = {
-      "data": {
-        "contractors": [
-          {
-            "full_name": "Bardi",
-            "day_rate": 100,
-            "available": true,
-            "specialities": [
-              {
-                "name": "Technology"
-              },
-              {
-                "name": "Home Living"
-              },
-              {
-                "name": "Automotive"
-              },
-              {
-                "name": "IoT"
-              },
-              {
-                "name": "Playground"
-              },
-              {
-                "name": "Electric"
-              }
-            ]
-          },
-          {
-            "full_name": "Tyga",
-            "day_rate": 199,
-            "available": false,
-            "specialities": [
-              {
-                "name": "Surgery"
-              },
-              {
-                "name": "Medical"
-              }
-            ]
-          },
-          {
-            "full_name": "Yolo.corp",
-            "day_rate": 200,
-            "available": true,
-            "specialities": [
-              {
-                "name": "Automotive"
-              },
-              {
-                "name": "Modification"
-              }
-            ]
-          },
-          {
-            "full_name": "Rossonerri",
-            "day_rate": 250,
-            "available": false,
-            "specialities": [
-              {
-                "name": "Healthcare"
-              },
-              {
-                "name": "Fitness"
-              }
-            ]
-          },
-          {
-            "full_name": "Strykes",
-            "day_rate": 300,
-            "available": true,
-            "specialities": [
-              {
-                "name": "Surgery"
-              },
-              {
-                "name": "Medical"
-              }
-            ]
-          }
-        ]
+const baseUrl = 'https://tim-test-task-57913b1d1965.herokuapp.com/graphql?';
+
+export const getDemoApi = async ({sortBy = "full_name", orderBy ="asc", searchBy}: ApiProps) => {
+  const query = `{
+    contractors(_sort: "${sortBy}", _order: "${orderBy}", q: "${searchBy}") {
+      full_name
+      day_rate
+      available
+      specialities {
+        name
       }
     }
-    return response.data;
+  }`;
+
+  try {
+    const response = await request(baseUrl, query);
+    return response
   } catch (error) {
     throw error;
   }
 };
+

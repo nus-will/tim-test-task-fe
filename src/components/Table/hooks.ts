@@ -20,11 +20,11 @@ const useTable = () => {
     console.log(type)
     console.log(direction)
     setSelectSortColumn(!selectSortColumn)
-  }, [])
+  }, [selectSortColumn])
 
   const handleCheckedContractor = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setCheckedContractor(e.target.checked)
-  }, [selectedContractor])
+  }, [])
 
   return {
     handleSelectedContractor,

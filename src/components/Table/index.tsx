@@ -9,14 +9,14 @@ import sortIcon from "../../assets/images/sort-icon.svg";
 
 interface Props {
   tableData: IContractor[];
+  searchData: (n: string) => void;
+  isLoading: boolean;
 }
 
-export default function Table({ tableData }: Props) {
-  const { handleSortColumn } = useTable();
-
+export default function Table({ tableData, searchData, isLoading }: Props) {
   return (
     <div className="box-shadow flex flex-col max-w-[63.194vw]  h-full w-full">
-      <Search />
+      <Search inputValue={(e) => searchData(e)} />
 
       <div className="flex w-full overflow-scroll">
         <table className="table-auto mb-[24px] px-[24px] min-w-[768px] w-full">
@@ -60,7 +60,32 @@ export default function Table({ tableData }: Props) {
             </tr>
           </thead>
           <tbody>
-            <TableBody contractors={tableData} />
+            {isLoading ? (
+              <>
+                <td className="w-[24px]" />
+                <td>
+                  <div className="flex items-center gap-[16px]">
+                    <div className="rounded-full bg-gray400 h-10 w-10"></div>
+                    <div className="h-2 bg-gray400 rounded w-[6.05vw]"></div>
+                  </div>
+                </td>
+                <td>
+                  <div className="flex gap-[8px]">
+                    <div className="h-5 bg-gray400 rounded w-[6.34vw]"></div>
+                    <div className="h-5 bg-gray400 rounded w-[6.34vw]"></div>
+                    <div className="h-5 bg-gray400 rounded w-[2.34vw]"></div>
+                  </div>
+                </td>
+                <td>
+                  <div className="h-2 bg-gray400 rounded w-[5.3vw]"></div>
+                </td>
+                <td>
+                  <div className="h-2 bg-gray400 rounded w-[5.3vw]"></div>
+                </td>
+              </>
+            ) : (
+              <TableBody contractors={tableData} />
+            )}
           </tbody>
         </table>
       </div>

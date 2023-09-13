@@ -6,7 +6,11 @@ import { generateRandomColor } from "../../utils/utils";
 
 export default function Overview() {
   const [tableData, setTableData] = useState<any>(null);
-  const { data } = useDemoQuery();
+  const [searchText, setSearchText] = useState<string>("");
+
+  const { data, refetch, isLoading } = useDemoQuery({
+    searchBy: searchText,
+  });
 
   useEffect(() => {
     if (data) {
@@ -18,6 +22,12 @@ export default function Overview() {
       );
     }
   }, [data]);
+
+  useEffect(() => {
+    if (searchText) {
+      refetch();
+    } else if (searchText === "") refetch();
+  }, [searchText, refetch]);
 
   return (
     <TabNavigationLayout>
@@ -32,11 +42,13 @@ export default function Overview() {
           </p>
         </div>
 
-        {data && (
-          <div className="flex mt-[40px] max-w-[63.194vw] w-full 2xl:max-w-[910px]">
-            <Table tableData={tableData} />
-          </div>
-        )}
+        <div className="flex mt-[40px] max-w-[63.194vw] w-full 2xl:max-w-[910px]">
+          <Table
+            tableData={tableData}
+            searchData={(e) => setSearchText(e)}
+            isLoading={isLoading}
+          />
+        </div>
       </div>
     </TabNavigationLayout>
   );

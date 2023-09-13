@@ -1,7 +1,21 @@
 import searchLight from "../../assets/images/search-light.svg";
 import filterItem from "../../assets/images/filter-icon.svg";
+import { useCallback } from "react";
 
-export default function Search() {
+interface SearchProps {
+  inputValue: (n: string) => void;
+}
+
+export default function Search({ inputValue }: SearchProps) {
+  const handleSearch = useCallback(
+    (e: any) => {
+      if (e.key === "Enter") {
+        inputValue(e.target.value);
+      }
+    },
+    [inputValue]
+  );
+
   return (
     <div className="flex gap-[16px] w-full my-[24px] px-[24px]">
       <div className="flex px-[12px] rounded-[8px] py-[14px] w-full bg-light-gray200 gap-[8px]">
@@ -10,6 +24,9 @@ export default function Search() {
           type="text"
           placeholder="Search..."
           className="bg-light-gray200 w-full color-gray400"
+          onKeyUp={(e) => {
+            handleSearch(e);
+          }}
         />
       </div>
 
