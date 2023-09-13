@@ -41,7 +41,7 @@ export default function Overview() {
 
   return (
     <TabNavigationLayout>
-      <div className="flex flex-col max-w-[63.194vw] ml-[18.056vw] mr-auto py-[80px]">
+      <div className="flex flex-col max-w-[63.194vw] ml-[18.056vw] mr-auto py-[80px] 2xl:mx-auto 2xl:max-w-[910px] ">
         <div className="flex flex-col gap-[8px]">
           <h1 className="text-gray700 text-[40px] font-semibold leading-[48px]">
             Contractors
